@@ -1,24 +1,35 @@
 <?php
 session_start();
 
-// Hardcoded admin credentials
-$admin_username = "admin";
-$admin_password = "9999";
+// Include the database connection file
+include('../dbcon.php');
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = $_POST['username'];
     $password = $_POST['password'];
 
-    if ($username === $admin_username && $password === $admin_password) {
+    // Prepare and execute a SQL query to check credentials with prepared statements
+    $stmt = $dbcon->prepare("SELECT admin_id FROM admin WHERE Ausername = ? AND Apassword = ?");
+    $stmt->bind_param("ss", $username, $password);
+    $stmt->execute();
+    $stmt->bind_result($admin_id);
+    $stmt->fetch();
+    $stmt->close();
+
+    if ($admin_id) {
+        // Valid credentials
         $_SESSION['loggedin'] = true;
         // Set session expiration time to 30 minutes (adjust as needed)
-        $_SESSION['expire_time'] = time() + (1 * 60);
+        $_SESSION['expire_time'] = time() + (30 * 60);
         header("Location: admindash.php");
         exit;
     } else {
         $error = "Invalid username or password";
     }
 }
+
+// Close the database connection
+$dbcon->close();
 ?>
 
 

@@ -1,3 +1,45 @@
+<?php
+session_start();
+include("dbbcon.php");
+
+if (isset($_POST['login'])) {
+    $username = $_POST['username'];
+    $password = $_POST['password'];
+
+   
+   
+    // Use prepared statements to prevent SQL injection
+    $stmt = mysqli_prepare($dbcon, "SELECT user_id, password FROM users WHERE username=?");
+
+    mysqli_stmt_bind_param($stmt, "s", $username);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_bind_result($stmt, $userId, $hashedPassword);
+    mysqli_stmt_fetch($stmt);
+
+    mysqli_stmt_close($stmt);
+
+    if ($hashedPassword && password_verify($password, $hashedPassword)) {
+        // Clear the 'added_products' session variable when a new user logs in
+        $_SESSION['added_products'] = array();
+
+        $_SESSION['user_id'] = $userId;
+
+        // Redirect to the Shop page
+        header("Location: shop.php");
+        exit(); // Ensure script execution stops after the redirect
+    } else {
+        echo "Incorrect username or password!";
+    }
+}
+?>
+
+
+
+
+
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -63,35 +105,34 @@
 </head>
 <body>
 
-    <?php
-    if (isset($_POST['submit'])) {
-        $username = $_POST['username'];
-        $password = $_POST['password'];
-        if ($username == "user1" & $password == "user12") {
-         header("Location: cart.html");
-        exit();
-        } else {
-            echo "invalid password or username";
-        }
-    }
-    ?>
+   
 
     <div class="login-container">
         <h2>Login</h2>
         <form action="login.php" method="post">
             <div class="form-group">
-                <label for="email">username:</label>
-                <input type="text" id="username" name="username" required>
+                <label >username:</label>
+                <input type="text" name="username" placeholder="Username" required>
             </div>
             <div class="form-group">
-                <label for="password">Password:</label>
-                <input type="password" id="password" name="password" required>
+                <label>Password:</label>
+                <input type="password" name="password" placeholder="Password" required>
             </div>
             <div class="form-group">
-                <button type="submit" name="submit" >Login</button>
+            <input type="submit" name="login" value="Login">
             </div>
         </form>
-        <p >Don't have an account? <a href="signup.html" >create account</a></p>
+
+        <form method="post" action="login.php">
+   
+    
+    
+</form>
+        <p >Don't have an account? <a href="signup.php" >create account</a></p>
+        <?php
+include("dbcon.php");
+?>
     </div>
+ 
 </body>
 </html>

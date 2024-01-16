@@ -1,3 +1,29 @@
+
+<?php
+include("dbbcon.php");
+
+if (isset($_POST['register'])) {
+    $username = $_POST['username'];
+    $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
+
+    // Use prepared statements to prevent SQL injection
+    $stmt = mysqli_prepare($dbcon, "INSERT INTO users (username, password) VALUES (?, ?)");
+
+    mysqli_stmt_bind_param($stmt, "ss", $username, $password);
+
+    if (mysqli_stmt_execute($stmt)) {
+        echo "Registration successful!";
+    } else {
+        echo "Error: " . mysqli_error($dbcon);
+    }
+
+    mysqli_stmt_close($stmt);
+}
+
+?>
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -66,19 +92,24 @@
         <h2>Sign Up</h2>
         <form action="#" method="post">
             <div class="form-group">
-                <label for="email">Email:</label>
-                <input type="email" id="email" name="email" required>
+                <label>username:</label>
+                <input type="text" name="username" placeholder="Username" required>
             </div>
             <div class="form-group">
-                <label for="password">Password:</label>
-                <input type="password" id="password" name="password" required>
+                <label >Password:</label>
+                <input type="password" name="password" placeholder="Password" required>
             </div>
             <div class="form-group">
-                <button type="submit">Sign Up</button>
+                <input type="submit" name="register" value="Register">
             </div>
         </form>
 
-        <p >Already have an account? <a href="login.html" >Log In</a></p>
+
+
+        <p >Already have an account? <a href="login.php" >Log In</a></p>
+        <?php
+include("dbcon.php");
+?>
     </div>
 </body>
 </html>

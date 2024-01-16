@@ -109,7 +109,7 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
               </a>
             </li>
             <li class="nav-item ">
-              <a class="nav-link" href="sreport.html">
+              <a class="nav-link" href="areport.php">
                 Sales Report
               </a>
             </li>

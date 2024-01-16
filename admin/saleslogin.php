@@ -9,7 +9,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $password = $_POST['password'];
 
     // Prepare and execute a SQL query to check credentials
-    $stmt = $dbcon->prepare("SELECT Dusername FROM delivery WHERE Dusername = ? AND Dpassword = ?");
+    $stmt = $dbcon->prepare("SELECT sales_id FROM sales WHERE susername = ? AND spassword = ?");
     $stmt->bind_param("ss", $username, $password);
     $stmt->execute();
     $stmt->bind_result($dbUsername);
@@ -20,7 +20,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Valid credentials
         $_SESSION['loggedin'] = true;
         $_SESSION['expire_time'] = time() + (1 * 60);
-        header("Location: delivery.php");
+        header("Location: sales.php");
         exit;
     } else {
         $error = "Invalid username or password";
@@ -35,7 +35,7 @@ $dbcon->close();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Delivery Login</title>
+    <title>sales-Login</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -102,8 +102,8 @@ $dbcon->close();
 
 
 <div class="login-container">
-    <h2>Delivery Person Login</h2>
-    <form class="login-form" action="deliverylogin.php" method="post">
+    <h2>Sales Person-Login</h2>
+    <form class="login-form" action="saleslogin.php" method="post">
         <div class="form-group">
             <label for="username">username:</label>
             <input type="text" id="username" name="username" required>
